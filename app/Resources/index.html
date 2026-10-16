@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload.am Split VPN Dashboard</title>
+    <style>
+        :root {
+            --bg: rgba(15, 23, 42, 0.85);
+            --card: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.09);
+            --accent: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.35);
+            --danger: #f43f5e;
+            --danger-glow: rgba(244, 63, 94, 0.35);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --brand-blue: #38bdf8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Vazirmatn UI", "Vazirmatn", sans-serif;
+            background: transparent;
+            color: var(--text-main);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #38bdf8, #2563eb);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 4px 9px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid var(--border);
+        }
+
+        .status-badge.connected {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #34d399;
+        }
+
+        .status-badge.disconnected {
+            background: rgba(244, 63, 94, 0.12);
+            border-color: rgba(244, 63, 94, 0.3);
+            color: #fb7185;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .connected .dot {
+            background: #10b981;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .disconnected .dot {
+            background: #f43f5e;
+            box-shadow: 0 0 10px var(--danger-glow);
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dim);
+        }
+
+        select, input, textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            padding: 8px 10px;
+            font-size: 12px;
+            font-family: inherit;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            border-color: var(--brand-blue);
+        }
+
+        textarea {
+            resize: none;
+            height: 52px;
+            font-family: 'SF Mono', Monaco, monospace;
+            direction: ltr;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: white;
+        }
+
+        .btn-connect {
+            background: linear-gradient(135deg, #059669, #047857);
+            box-shadow: 0 4px 14px var(--accent-glow);
+        }
+
+        .btn-connect:hover {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .btn-disconnect {
+            background: linear-gradient(135deg, #e11d48, #be123c);
+            box-shadow: 0 4px 14px var(--danger-glow);
+        }
+
+        .btn-disconnect:hover {
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+        }
+
+        .logs-section {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .logs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        .logs-box {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 10px;
+            line-height: 1.4;
+            color: #cbd5e1;
+            overflow-y: auto;
+            direction: ltr;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="brand">
+            <div class="brand-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </div>
+            <div>
+                <div class="title" data-i18n="title">Upload.am Split VPN</div>
+                <div class="subtitle" data-i18n="subtitle">قوانین روت هوشمند (بدون تداخل با V2Ray)</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="lang-btn" onclick="toggleLang()" id="langBtn">EN</button>
+            <div id="statusBadge" class="status-badge disconnected">
+                <span class="dot"></span>
+                <span id="statusText" data-i18n="disconnected">قطع</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="form-row">
+            <label for="modeSelect" data-i18n="mode_label">حالت مسیریابی ترافیک (Routing Mode):</label>
+            <select id="modeSelect" onchange="handleModeChange()">
+                <option value="telegram" selected data-i18n="opt_tg">فقط تلگرام (Split Tunneling - پیش‌فرض ایمن)</option>
+                <option value="full" data-i18n="opt_full">تمام اینترنت (Full VPN)</option>
+                <option value="custom" data-i18n="opt_custom">فقط سایت‌ها و آی‌پی‌های دلخواه (Whitelist)</option>
+                <option value="exclude" data-i18n="opt_exclude">همه اینترنت به جز موارد زیر (Exclude)</option>
+            </select>
+        </div>
+
+        <div id="targetsRow" class="form-row" style="display: none;">
+            <label for="targetsInput" data-i18n="targets_label">آدرس دامنه‌ها یا IP/CIDR (با کاما یا خط جدید جدا کنید):</label>
+            <textarea id="targetsInput" placeholder="twitter.com, youtube.com, 1.1.1.1/32"></textarea>
+        </div>
+    </div>
+
+    <button id="toggleBtn" class="btn-action btn-connect" onclick="handleToggle()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+            <line x1="12" y1="2" x2="12" y2="12"></line>
+        </svg>
+        <span id="btnText" data-i18n="btn_connect">روشن کردن (Connect)</span>
+    </button>
+
+    <div class="logs-section">
+        <div class="logs-header">
+            <span data-i18n="logs_title">وضعیت و لاگ سرور:</span>
+            <span id="v2rayBadge" style="color: #38bdf8; font-size: 10px;" data-i18n="v2ray_status">V2Ray دست‌نخورده</span>
+        </div>
+        <div id="logsBox" class="logs-box">آماده اتصال...</div>
+    </div>
+
+    <script>
+        let currentLang = 'fa';
+        let isConnected = false;
+
+        const i18n = {
+            fa: {
+                title: "Upload.am Split VPN",
+                subtitle: "قوانین روت هوشمند (بدون تداخل با V2Ray)",
+                connected: "متصل",
+                disconnected: "قطع",
+                mode_label: "حالت مسیریابی ترافیک (Routing Mode):",
+                opt_tg: "فقط تلگرام (Split Tunneling - پیش‌فرض ایمن)",
+                opt_full: "تمام اینترنت (Full VPN)",
+                opt_custom: "فقط سایت‌ها و آی‌پی‌های دلخواه (Whitelist)",
+                opt_exclude: "همه اینترنت به جز موارد زیر (Exclude)",
+                targets_label: "آدرس دامنه‌ها یا IP/CIDR (با کاما یا خط جدید جدا کنید):",
+                btn_connect: "روشن کردن (Connect)",
+                btn_disconnect: "خاموش کردن (Disconnect)",
+                logs_title: "وضعیت و لاگ سرور:",
+                v2ray_status: "V2Ray دست‌نخورده",
+                lang_btn: "EN"
+            },
+            en: {
+                title: "Upload.am Split VPN",
+                subtitle: "Rule-Based Split Tunneling (V2Ray Safe)",
+                connected: "Connected",
+                disconnected: "Disconnected",
+                mode_label: "Traffic Routing Mode:",
+                opt_tg: "Telegram Only (Split Tunneling - Safe Default)",
+                opt_full: "Full VPN (All Internet Traffic)",
+                opt_custom: "Custom Whitelist (Domains / IPs Only)",
+                opt_exclude: "All Traffic Except Excluded IPs/Domains",
+                targets_label: "Domains or IP/CIDR (comma or newline separated):",
+                btn_connect: "Connect VPN",
+                btn_disconnect: "Disconnect VPN",
+                logs_title: "Server & Connection Logs:",
+                v2ray_status: "V2Ray Untouched",
+                lang_btn: "FA"
+            }
+        };
+
+        function toggleLang() {
+            currentLang = (currentLang === 'fa') ? 'en' : 'fa';
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = (currentLang === 'fa') ? 'rtl' : 'ltr';
+            document.getElementById('langBtn').innerText = i18n[currentLang].lang_btn;
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[currentLang][key]) el.innerText = i18n[currentLang][key];
+            });
+
+            updateUI(isConnected);
+        }
+
+        function handleModeChange() {
+            const mode = document.getElementById('modeSelect').value;
+            const targetsRow = document.getElementById('targetsRow');
+            targetsRow.style.display = (mode === 'custom' || mode === 'exclude') ? 'flex' : 'none';
+        }
+
+        function updateUI(status, logs) {
+            isConnected = status;
+            const badge = document.getElementById('statusBadge');
+            const statusText = document.getElementById('statusText');
+            const btn = document.getElementById('toggleBtn');
+            const btnText = document.getElementById('btnText');
+            const logsBox = document.getElementById('logsBox');
+
+            if (isConnected) {
+                badge.className = 'status-badge connected';
+                statusText.innerText = i18n[currentLang].connected;
+                btn.className = 'btn-action btn-disconnect';
+                btnText.innerText = i18n[currentLang].btn_disconnect;
+            } else {
+                badge.className = 'status-badge disconnected';
+                statusText.innerText = i18n[currentLang].disconnected;
+                btn.className = 'btn-action btn-connect';
+                btnText.innerText = i18n[currentLang].btn_connect;
+            }
+
+            if (logs) {
+                logsBox.innerText = logs;
+                logsBox.scrollTop = logsBox.scrollHeight;
+            }
+        }
+
+        function handleToggle() {
+            if (isConnected) {
+                window.webkit.messageHandlers.action.postMessage({ command: 'stop' });
+            } else {
+                const mode = document.getElementById('modeSelect').value;
+                const targets = document.getElementById('targetsInput').value;
+                document.getElementById('logsBox').innerText = (currentLang === 'fa') ? 'در حال برقراری اتصال...' : 'Connecting to VPN...';
+                window.webkit.messageHandlers.action.postMessage({ command: 'start', mode: mode, targets: targets });
+            }
+        }
+
+        setInterval(() => {
+            window.webkit.messageHandlers.action.postMessage({ command: 'poll' });
+        }, 2000);
+    </script>
+</body>
+</html>

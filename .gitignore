@@ -1,0 +1,7 @@
+.DS_Store
+*.ovpn
+*.log
+*.pid
+build/
+app/build/
+.env
