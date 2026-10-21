@@ -69,6 +69,13 @@ Upload.am provides cloud storage with an integrated free OpenVPN profile.
 
 ### Quick Install (macOS)
 
+#### Option 1: Download Native DMG Installer (Recommended)
+Download the standalone `.dmg` installer directly from the [GitHub Releases](https://github.com/ketabchi-ar/upload-am-split-vpn/releases):
+- 📥 **[Download UploadAmVPN.dmg (Apple Silicon & Intel)](https://github.com/ketabchi-ar/upload-am-split-vpn/releases/latest)**
+
+Drag and drop `UploadAmVPN.app` into `/Applications` and run!
+
+#### Option 2: Build from Source via Terminal
 Clone the repository and run the automated installer:
 
 ```bash
@@ -133,6 +140,19 @@ python3 scripts/generate_config.py \
   ```bash
   sudo killall openvpn
   ```
+
+---
+
+## 4. Web-Based Universal Generator (Mobile, Windows & Linux)
+
+For users on **iOS, Android, Windows, or Linux**:
+Open the built-in web generator hosted on GitHub Pages:
+🌐 **[Upload.am Split VPN Online Generator](https://ketabchi-ar.github.io/upload-am-split-vpn/)**
+
+1. Paste your API token.
+2. Select your split tunnel mode (Telegram only or Custom).
+3. Tap **Download Profile (.ovpn)**.
+4. Import into **OpenVPN Connect** (iOS / Android / Windows) and connect with one tap!
 
 ---
 

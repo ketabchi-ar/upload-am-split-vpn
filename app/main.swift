@@ -152,7 +152,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler, WKNa
             genProcess.waitUntilExit()
 
             // Run openvpn via AppleScript for admin privileges
-            let script = "do shell script \"\(self.openvpnBin) --config '\(self.activeProfilePath)' --daemon upload-am-vpn --writepid '\(self.pidFile)' --log '\(self.logFile)'\" with administrator privileges"
+            let script = "do shell script \"\(self.openvpnBin) --config '\(self.activeProfilePath)' --daemon upload-am-vpn --writepid '\(self.pidFile)' --log '\(self.logFile)'; chmod 666 '\(self.logFile)' '\(self.pidFile)' 2>/dev/null\" with administrator privileges"
             var error: NSDictionary?
             if let appleScript = NSAppleScript(source: script) {
                 appleScript.executeAndReturnError(&error)

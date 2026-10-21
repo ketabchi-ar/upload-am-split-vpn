@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload.am Split VPN Generator</title>
+    <style>
+        :root {
+            --bg: #090d16;
+            --card: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.35);
+            --brand-blue: #38bdf8;
+            --brand-gradient: linear-gradient(135deg, #38bdf8, #2563eb);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Vazirmatn", "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .glow-1 {
+            position: absolute;
+            top: -150px;
+            right: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.15), transparent 70%);
+            pointer-events: none;
+        }
+
+        .glow-2 {
+            position: absolute;
+            bottom: -150px;
+            left: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.12), transparent 70%);
+            pointer-events: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .header {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-box {
+            width: 54px;
+            height: 54px;
+            background: var(--brand-gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .lang-switch {
+            display: flex;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            margin-top: 4px;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active {
+            background: var(--brand-blue);
+            color: #0f172a;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #cbd5e1;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-main);
+            padding: 12px 14px;
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--brand-blue);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #64748b;
+        }
+
+        .token-help {
+            font-size: 11px;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        .token-help a {
+            color: var(--brand-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .token-help a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 16px var(--accent-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #34d399, #10b981);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-msg {
+            font-size: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            display: none;
+            line-height: 1.5;
+        }
+
+        .status-msg.error {
+            display: block;
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: #fb7185;
+        }
+
+        .status-msg.success {
+            display: block;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+        }
+
+        .platforms-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .platforms-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+
+        .platforms-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .platform-badge {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .footer a {
+            color: var(--brand-blue);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-1"></div>
+    <div class="glow-2"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo-box">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </div>
+            <h1 class="title" data-i18n="title">Upload.am Split VPN Generator</h1>
+            <p class="subtitle" data-i18n="subtitle">تولید خودکار فایل کانفیگ OpenVPN برای تلگرام و دستگاه‌های همراه (iOS, Android, Windows, Mac)</p>
+            <div class="lang-switch">
+                <button class="lang-btn active" id="btnFa" onclick="setLang('fa')">فارسی</button>
+                <button class="lang-btn" id="btnEn" onclick="setLang('en')">English</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="form-group">
+                <label for="tokenInput" data-i18n="label_token">توکن API حساب Upload.am:</label>
+                <input type="text" id="tokenInput" placeholder="ua_live_..." dir="ltr" spellcheck="false" autocomplete="off">
+                <div class="token-help" data-i18n="token_help">
+                    هنوز حساب ندارید؟ <a href="https://upload.am/en/register?ref=zzc77xsprl" target="_blank">ثبت‌نام با هدیه ۵۰ گیگابایت</a> • توکن در مسیر Settings → API ساخته می‌شود.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="modeSelect" data-i18n="label_mode">نوع تفکیک ترافیک (Split Mode):</label>
+                <select id="modeSelect" onchange="toggleCustomInputs()">
+                    <option value="telegram" selected data-i18n="opt_tg">فقط تلگرام (Split Tunneling - ایمن و سازگار با V2Ray)</option>
+                    <option value="full" data-i18n="opt_full">تمام اینترنت (Full VPN)</option>
+                    <option value="custom" data-i18n="opt_custom">لیست سفید دامنه‌ها و آی‌پی‌های دلخواه</option>
+                    <option value="exclude" data-i18n="opt_exclude">همه اینترنت به جز موارد خاص</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="customBox" style="display: none;">
+                <label for="customInput" data-i18n="label_custom">دامنه‌ها یا آی‌پی‌ها (با کاما جدا کنید):</label>
+                <textarea id="customInput" dir="ltr" placeholder="twitter.com, youtube.com, 1.1.1.1/32"></textarea>
+            </div>
+
+            <button class="btn-submit" id="generateBtn" onclick="generateAndDownload()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span id="btnText" data-i18n="btn_gen">دریافت فایل کانفیگ (.ovpn)</span>
+            </button>
+
+            <div id="statusBox" class="status-msg"></div>
+        </div>
+
+        <div class="platforms-box">
+            <span class="platforms-title" data-i18n="plat_title">نحوه استفاده در کلاینت‌ها:</span>
+            <div class="platforms-grid">
+                <div class="platform-badge">
+                    <span>📱 iOS / Android</span>
+                    <span style="font-size: 9px; color: #94a3b8;">OpenVPN Connect</span>
+                </div>
+                <div class="platform-badge">
+                    <span>💻 Windows</span>
+                    <span style="font-size: 9px; color: #94a3b8;">OpenVPN GUI</span>
+                </div>
+                <div class="platform-badge">
+                    <span>🍎 macOS</span>
+                    <span style="font-size: 9px; color: #94a3b8;">اپ بومی DMG</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>توسعه‌دهنده: <a href="https://github.com/ketabchi-ar" target="_blank">اردلان کتابچی</a> • <a href="https://github.com/ketabchi-ar/upload-am-split-vpn" target="_blank">مخزن گیت‌هاب پروژه</a></p>
+        </div>
+    </div>
+
+    <script>
+        const TELEGRAM_CIDRS = [
+            ["91.108.4.0", "255.255.252.0"],
+            ["91.108.8.0", "255.255.252.0"],
+            ["91.108.12.0", "255.255.252.0"],
+            ["91.108.16.0", "255.255.252.0"],
+            ["91.108.20.0", "255.255.252.0"],
+            ["91.108.56.0", "255.255.252.0"],
+            ["91.105.192.0", "255.255.254.0"],
+            ["149.154.160.0", "255.255.240.0"],
+            ["185.76.151.0", "255.255.255.0"]
+        ];
+
+        const i18n = {
+            fa: {
+                title: "Upload.am Split VPN Generator",
+                subtitle: "تولید خودکار فایل کانفیگ OpenVPN برای تلگرام و دستگاه‌های همراه (iOS, Android, Windows, Mac)",
+                label_token: "توکن API حساب Upload.am:",
+                token_help: 'هنوز حساب ندارید؟ <a href="https://upload.am/en/register?ref=zzc77xsprl" target="_blank">ثبت‌نام با هدیه ۵۰ گیگابایت</a> • توکن در مسیر Settings → API ساخته می‌شود.',
+                label_mode: "نوع تفکیک ترافیک (Split Mode):",
+                opt_tg: "فقط تلگرام (Split Tunneling - ایمن و سازگار با V2Ray)",
+                opt_full: "تمام اینترنت (Full VPN)",
+                opt_custom: "لیست سفید دامنه‌ها و آی‌پی‌های دلخواه",
+                opt_exclude: "همه اینترنت به جز موارد خاص",
+                label_custom: "دامنه‌ها یا آی‌پی‌ها (با کاما جدا کنید):",
+                btn_gen: "دریافت فایل کانفیگ (.ovpn)",
+                plat_title: "نحوه استفاده در کلاینت‌ها:",
+                connecting: "در حال دریافت کانفیگ از سرور Upload.am...",
+                success: "کانفیگ با موفقیت ساخته و دانلود شد! فایل را در اپلیکیشن OpenVPN باز کنید.",
+                err_token: "لطفاً ابتدا توکن API معتبر را وارد کنید."
+            },
+            en: {
+                title: "Upload.am Split VPN Generator",
+                subtitle: "Generate rule-based OpenVPN profiles for Telegram & Mobile devices (iOS, Android, Windows, Mac)",
+                label_token: "Upload.am Account API Token:",
+                token_help: 'No account? <a href="https://upload.am/en/register?ref=zzc77xsprl" target="_blank">Register with 50 GB Bonus</a> • Create token under Settings → API.',
+                label_mode: "Traffic Routing Mode (Split Mode):",
+                opt_tg: "Telegram Only (Split Tunneling - V2Ray Safe)",
+                opt_full: "Full VPN (All Internet Traffic)",
+                opt_custom: "Custom Whitelist (Domains / IPs Only)",
+                opt_exclude: "All Traffic Except Excluded IPs/Domains",
+                label_custom: "Domains or IPs (comma-separated):",
+                btn_gen: "Download Config Profile (.ovpn)",
+                plat_title: "Client Instructions:",
+                connecting: "Fetching profile from Upload.am API...",
+                success: "Profile generated & downloaded successfully! Import it into OpenVPN Connect.",
+                err_token: "Please enter a valid Upload.am API token."
+            }
+        };
+
+        let currentLang = 'fa';
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            document.documentElement.dir = (lang === 'fa') ? 'rtl' : 'ltr';
+            document.getElementById('btnFa').className = (lang === 'fa') ? 'lang-btn active' : 'lang-btn';
+            document.getElementById('btnEn').className = (lang === 'en') ? 'lang-btn active' : 'lang-btn';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) el.innerHTML = i18n[lang][key];
+            });
+        }
+
+        function toggleCustomInputs() {
+            const mode = document.getElementById('modeSelect').value;
+            const customBox = document.getElementById('customBox');
+            customBox.style.display = (mode === 'custom' || mode === 'exclude') ? 'flex' : 'none';
+        }
+
+        function showStatus(msg, isError) {
+            const box = document.getElementById('statusBox');
+            box.className = isError ? 'status-msg error' : 'status-msg success';
+            box.innerText = msg;
+        }
+
+        async function generateAndDownload() {
+            const token = document.getElementById('tokenInput').value.trim();
+            const mode = document.getElementById('modeSelect').value;
+            const customText = document.getElementById('customInput').value.trim();
+
+            if (!token) {
+                showStatus(i18n[currentLang].err_token, true);
+                return;
+            }
+
+            const btn = document.getElementById('generateBtn');
+            const btnText = document.getElementById('btnText');
+            btn.disabled = true;
+            btnText.innerText = i18n[currentLang].connecting;
+
+            try {
+                // Fetch profile directly
+                const res = await fetch("https://upload.am/api/v1/vpn/profile", {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (!res.ok) {
+                    throw new Error(`API Error: ${res.status}`);
+                }
+
+                const baseOvpn = await res.text();
+                const modifiedOvpn = injectRoutes(baseOvpn, mode, customText);
+
+                // Trigger download
+                const blob = new Blob([modifiedOvpn], { type: "application/x-openvpn-profile" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `upload-am-${mode}.ovpn`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showStatus(i18n[currentLang].success, false);
+            } catch (err) {
+                showStatus("خطا در برقراری ارتباط با API یا توکن نامعتبر است: " + err.message, true);
+            } finally {
+                btn.disabled = false;
+                btnText.innerText = i18n[currentLang].btn_gen;
+            }
+        }
+
+        function injectRoutes(rawText, mode, customTargets) {
+            const lines = rawText.split("\n").filter(l => {
+                const s = l.trim();
+                return !s.startsWith("route-nopull") && !s.startsWith("block-outside-dns");
+            });
+
+            let routeBlock = [];
+            if (mode === "telegram") {
+                routeBlock.push("\n# Mode: Telegram Split Tunneling (No default gateway override)");
+                routeBlock.push("route-nopull");
+                TELEGRAM_CIDRS.forEach(([net, mask]) => {
+                    routeBlock.push(`route ${net} ${mask}`);
+                });
+            } else if (mode === "custom") {
+                routeBlock.push("\n# Mode: Custom Whitelist");
+                routeBlock.push("route-nopull");
+                if (customTargets) {
+                    customTargets.split(/[\n, ]+/).forEach(t => {
+                        const target = t.trim();
+                        if (target) routeBlock.push(`route ${target} 255.255.255.255`);
+                    });
+                }
+            } else if (mode === "exclude") {
+                routeBlock.push("\n# Mode: Exclude");
+                if (customTargets) {
+                    customTargets.split(/[\n, ]+/).forEach(t => {
+                        const target = t.trim();
+                        if (target) routeBlock.push(`route ${target} 255.255.255.255 net_gateway`);
+                    });
+                }
+            }
+
+            const caIndex = lines.findIndex(l => l.trim().startsWith("<ca>"));
+            if (caIndex !== -1) {
+                return [...lines.slice(0, caIndex), ...routeBlock, "", ...lines.slice(caIndex)].join("\n");
+            } else {
+                return [...lines, ...routeBlock].join("\n");
+            }
+        }
+    </script>
+</body>
+</html>

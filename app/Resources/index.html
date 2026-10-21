@@ -387,7 +387,7 @@
                 btnText.innerText = i18n[currentLang].btn_connect;
             }
 
-            if (logs) {
+            if (logs && logs.trim().length > 0) {
                 logsBox.innerText = logs;
                 logsBox.scrollTop = logsBox.scrollHeight;
             }
